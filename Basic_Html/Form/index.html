@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Validation</title>
+    <script>
+        async function validateForm(event) {
+            event.preventDefault();
+            
+            try {
+                const response = await fetch('/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: document.getElementById('name').value,
+                        email: document.getElementById('email').value,
+                        password: document.getElementById('password').value,
+                        gender: document.querySelector('input[name="gender"]:checked').value,
+                        number: document.getElementById('number').value
+                    })
+                });
+                
+                const result = await response.text();
+                alert(result);
+                
+                if (response.ok) {
+                    document.getElementById('userForm').reset();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while submitting the form');
+            }
+        }
+    </script>
+</head>
+<body>
+    <form id="userForm" onsubmit="validateForm(event)" class="form">
+        <div>
+            <label for="name">Name</label>
+            <input type="text" name="name" id="name" placeholder="Enter your name" required />
+        </div>
+        <div>
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" placeholder="Enter your email" required />
+        </div>
+        <div>
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" placeholder="Enter your password" required />
+        </div>
+        <div>
+            <label>Gender</label>
+            <input type="radio" name="gender" value="male" required /> Male
+            <input type="radio" name="gender" value="female" required /> Female
+        </div>
+        <div>
+            <label for="number">Number</label>
+            <input type="text" name="number" id="number" placeholder="Enter your number" required pattern="\d{10}" title="Enter a 10-digit phone number" maxlength="10" />
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
